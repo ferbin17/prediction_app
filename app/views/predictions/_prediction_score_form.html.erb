@@ -1,0 +1,7 @@
+<% if fixture.present? %>
+  <%= fixture.home_team.show_name %>
+  <%= number_field_tag :home_team_score, prediction_score.try(:home_team_score).presence||0, required: true %>
+   - 
+  <%= number_field_tag :away_team_score_tag, prediction_score.try(:away_team_score).presence||0, required: true %>
+  <%= fixture.away_team.show_name %>
+<% end %>

@@ -1,0 +1,60 @@
+<div class="row">
+  <div class="col-7">
+    <h2>SIGN UP</h2>
+    <%= form_for(@user, url: sign_up_user_index_path) do |f| %>
+      <%= render partial: "layouts/error_messages", locals:{object: @user} %>
+      <div class="field">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text left-input-group-text">Email :</span>
+          </div>
+          <%= f.email_field :email_id, placeholder: "Email", required: true, class: "form-control" %>
+          <div class="input-group-append"> </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text left-input-group-text">Username :</span>
+          </div>
+          <%= f.text_field :username, placeholder: "Username", required: true, class: "form-control" %>
+          <div class="input-group-append"> </div>
+        </div>
+      </div>
+        
+      <div class="field">
+        <% if User.minimum_password_length %>
+          <em>(<%= User.minimum_password_length %> characters minimum)</em><br />
+        <% end %>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text left-input-group-text">Set Password :</span>
+          </div>
+          <%= f.password_field :password, autocomplete: "new-password", placeholder: "New Password", required: true, class: "form-control" %>
+          <div class="input-group-append">
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text left-input-group-text">Confirm Password :</span>
+          </div>
+          <%= f.password_field :confirm_password, autocomplete: "new-password", placeholder: "Confirm Password", required: true, class: "form-control" %>
+          <div class="input-group-append">
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <%= f.submit "SIGN UP", class: "submit_button" %>
+      </div>
+      
+      <div class="field">
+        <%= link_to "Existing User? LOGIN", login_user_index_path, class: "" %>
+      </div>
+    <% end %>
+  </div>
+</div>

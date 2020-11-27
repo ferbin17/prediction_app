@@ -1,0 +1,9 @@
+GameWeek: <%= @game_week.name %><br><br>
+<%= form_for(@prediction, url: edit_match_prediction_path, remote: true) do |f| %>
+  <div id="prediction_scores">
+    <%= render partial: "prediction_scores", locals: {prediction_scores: @prediction_scores, edit: @edit} %>
+  </div>
+  <%= f.submit "Change", class: "btn btn-primary" %>
+<% end %>
+<div id="edit_match" class="modal" tabindex="-1" role="dialog">
+</div>

@@ -1,0 +1,3 @@
+GameWeek: <%= @game_week.name %><br><br>
+<%= render partial: "prediction_scores", locals: {prediction_scores: @prediction_scores, edit: @edit} %>
+<%= link_to "Change Predictions", edit_prediction_path(@prediction.id), class: "btn btn-primary" if Time.at(@game_week.deadline_time_epoch) >= Time.now.localtime %>

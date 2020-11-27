@@ -1,0 +1,10 @@
+GameWeek Name: <%= @current_game_week.name %><br><br>
+<% if @prediction_scores.present? %>
+  <%= render partial: "predictions/prediction_scores", locals: {game_week: @current_game_week, prediction_scores: @prediction_scores, edit: nil} %>
+  <%= link_to "Change Predictions", edit_prediction_path(@prediction.id), class: "btn btn-primary" if Time.at(@current_game_week.deadline_time_epoch) >= Time.now.localtime %>
+<% else %>
+  <% @current_game_week.fixtures.each do |fixture| %>
+    <%= fixture.home_team.name %> vs <%= fixture.away_team.name %><br>
+  <% end %>
+  <%= link_to "Make Predictions", new_prediction_path, class: "btn btn-primary" %>
+<% end %>

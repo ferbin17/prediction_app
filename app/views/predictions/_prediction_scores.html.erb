@@ -1,0 +1,12 @@
+<% prediction_scores.each do |prediction_score| %>
+  <% if edit %>
+    <% checked = prediction_scores.first == prediction_score ? true : false %>
+    <%= radio_button_tag :prediction_score_id, prediction_score.id, checked %>
+  <% end %>
+  <%= prediction_score.home_team %>
+  <%= prediction_score.home_team_score %>
+  -
+  <%= prediction_score.away_team_score %>
+  <%= prediction_score.away_team %>
+  <br>
+<% end %>

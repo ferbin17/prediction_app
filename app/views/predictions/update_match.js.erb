@@ -1,0 +1,7 @@
+<% if @prediction_score.valid? %>
+  $('#edit_match').hide();
+  $('#edit_match').html('');
+  $('#prediction_scores').html(`<%= render partial: "prediction_scores", locals: {prediction_scores: @prediction_scores, edit: @edit} %>`);
+<% else %>
+  $('#edit_match').html(`<%= render partial: "edit_match_form", locals: {fixture: @fixture, prediction_score: @prediction_score} %>`);
+<% end %>

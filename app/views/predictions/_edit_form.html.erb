@@ -1,0 +1,4 @@
+<%= form_for(prediction, url: edit_match_prediction_path, remote: true) do |f| %>
+  <%= render partial: "prediction_scores", locals: {prediction_scores: prediction_scores, edit: edit} %>
+  <%= f.submit "Change", class: "btn btn-primary" %>
+<% end %>

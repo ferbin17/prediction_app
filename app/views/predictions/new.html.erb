@@ -1,0 +1,6 @@
+<%= form_for(@prediction_score, url: predictions_path) do |f| %>
+  <%= render partial: "layouts/error_messages", locals: {object: @prediction} %>
+  <%= render partial: "prediction_score_form", locals: {fixture: @fixture, prediction_score: nil} %>
+  <% button = @fixtures.count > 1 ? "Next" : "Finish" %>
+  <%= f.submit button, class: "btn btn-primary" %>
+<% end %>
