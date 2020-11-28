@@ -1,0 +1,35 @@
+<%= league.name %>
+<table>
+  <tr>
+    <th>Position</th>
+    <th>Team</th>
+    <th>Matches Played</th>
+    <th>Win</th>
+    <th>Draw</th>
+    <th>Lose</th>
+    <th>GS</th>
+    <th>GA</th>
+    <th>GD</th>
+    <th>Points</th>
+  </tr>
+  <% if league_tables.present? %>
+    <% league_tables.each_with_index do |league_table, index| %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= league_table.team.show_name %></td>
+        <td><%= league_table.matches %></td>
+        <td><%= league_table.wins %></td>
+        <td><%= league_table.draws %></td>
+        <td><%= league_table.lose %></td>
+        <td><%= league_table.goals_s %></td>
+        <td><%= league_table.goals_a %></td>
+        <td><%= league_table.goals_d %></td>
+        <td><%= league_table.points %></td>
+      </tr>
+    <% end %>
+  <% else %>
+    <tr>
+      <td colspan="4">Sorry Somthing went wrong</td>
+    </tr>
+  <% end %>
+</table>

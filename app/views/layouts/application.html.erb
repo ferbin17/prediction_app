@@ -15,7 +15,7 @@
 
   <body>
     <nav class="navbar-expand-lg navbar navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="/">
         <img src="/docs/4.3/assets/brand/bootstrap-solid.svg" width="30" height="30" class="d-inline-block align-top" alt="">
         442 Prediction App
       </a>
@@ -28,14 +28,14 @@
           </li>
           <% if @current_user.present? %>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="/predictions" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Prediction
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <%= link_to "Prediction Table", root_path, class: "dropdown-item" %>
-                <%= link_to "Prediction Results", root_path, class: "dropdown-item" %>
+                <%= link_to "Table", table_predictions_path, class: "dropdown-item" %>
+                <%= link_to "Results", results_predictions_path, class: "dropdown-item" %>
                 <div class="dropdown-divider"></div>
-                <%= link_to "Predict Now", root_path, class: "dropdown-item" %>
+                <%= link_to "Prediction Home", predictions_path, class: "dropdown-item" %>
               </div>
             </li>
           <% end %>
@@ -44,11 +44,11 @@
               League
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <%= link_to "Table", root_path, class: "dropdown-item" %>
-              <%= link_to "Results", root_path, class: "dropdown-item" %>
-              <%= link_to "Fixtures", root_path, class: "dropdown-item" %>
+              <%= link_to "Table", table_leagues_path, class: "dropdown-item" %>
+              <%= link_to "Results", results_leagues_path, class: "dropdown-item" %>
+              <%= link_to "Fixtures", fixtures_leagues_path, class: "dropdown-item" %>
               <div class="dropdown-divider"></div>
-              <%= link_to "Current GW", root_path, class: "dropdown-item" %>
+              <%= link_to "League Home", leagues_path, class: "dropdown-item" %>
             </div>
           </li>
           <% if @current_user.present? %>

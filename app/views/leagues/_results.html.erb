@@ -1,0 +1,34 @@
+<table>
+  <tr>
+    <th><%= link_to "<", results_leagues_path(id: prev_gw.id), remote: true if prev_gw.present? %></th>
+    <th colspan="2"><%= game_week.name %></th>
+    <th><%= link_to ">", results_leagues_path(id: nxt_gw.id), remote: true if nxt_gw.present? && (nxt_gw.finished? || nxt_gw.is_current) %></th>
+  </tr>
+  <tr>
+    <th>Time</th>
+    <th>Home Team</th>
+    <th>Score</th>
+    <th>Away Team</th>
+  </tr>
+  <% if fixtures.present? %>
+    <% fixtures.each do |fixture| %>
+      <tr>
+        <% time = fixture["started"] ? (fixture["finished"] ? "FT" : fixture["minutes"] ) : fixture["kickoff_time"].to_time.localtime.strftime("%d-%m-%y %H:%M") %>
+        <td><%= time %></td>
+        <% home_team = Team.find_by(slug: fixture["team_h"])
+           home_team = home_team.present? ? home_team.show_name : "NIL"
+           away_team = Team.find_by(slug: fixture["team_a"])
+           away_team = away_team.present? ? away_team.show_name : "NIL"
+        %> 
+        <td><%= home_team %></td>
+        <td><%= "#{fixture['team_h_score']} - #{fixture['team_a_score']}" %></td>
+        <td><%= away_team %></td>
+      </tr>
+    <% end %>
+  <% else %>
+    <tr>
+      <td colspan="4">Sorry Somthing went wrong</td>
+    </tr>
+  <% end %>
+</table>
+<%= link_to "Refresh result", results_leagues_path, remote: true, style: "display:none;visibility:hidden;", id: "refresh-results" %>

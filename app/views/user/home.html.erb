@@ -6,5 +6,9 @@ GameWeek Name: <%= @current_game_week.name %><br><br>
   <% @current_game_week.fixtures.each do |fixture| %>
     <%= fixture.home_team.name %> vs <%= fixture.away_team.name %><br>
   <% end %>
-  <%= link_to "Make Predictions", new_prediction_path, class: "btn btn-primary" %>
+  <% if Time.at(@current_game_week.deadline_time_epoch) > Time.now.localtime %>
+    <%= link_to "Make Predictions", new_prediction_path, class: "btn btn-primary" %>
+  <% else %>
+    Sorry, You haven't made prediction for this week. Deadline passed
+  <% end %>
 <% end %>

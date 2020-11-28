@@ -1,0 +1,21 @@
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title"><%= game_week.name %></h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <%= render partial: "prediction_table", locals: {prediction_tables: @prediction_tables} %>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary" onclick="$('#gw_table').hide();">Close</button>
+    </div>
+  </div>
+</div>
+<script>
+$('.close span').click(function(){
+  $('#gw_table').hide();
+})
+</script>

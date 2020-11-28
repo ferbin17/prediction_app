@@ -4,7 +4,14 @@ class PredictionsController < ApplicationController
   before_action :check_access_and_deadline, only: [:edit_match, :update_match]
   
   def index
-    redirect_to action: :new
+    @prediction_tables = PredictionTable.order("current_score desc, total_gw_predicted asc")
+    @current_game_week = @league.current_game_week
+    @current_gw_prediction = @current_user.predictions.find_by(game_week_id: @current_game_week.id)
+    @current_gw_predicitons = @current_user.game_week_predictions(@current_game_week.id) if @current_gw_prediction
+    
+    @last_game_week = @league.last_game_week
+    @current_gw_prediction = @current_user.predictions.find_by(game_week_id: @last_game_week.id)
+    @last_gw_predictions = @current_user.game_week_predictions(@last_game_week.id) if @current_gw_prediction
   end
   
   def new
@@ -50,6 +57,21 @@ class PredictionsController < ApplicationController
   def show
     @game_week = @prediction.game_week
     @prediction_scores = @prediction.prediction_scores
+  end
+  
+  def table
+    if params[:id].present?
+      @game_week = GameWeek.find_by_id(params[:id])
+      if @game_week && @game_week.finished && @game_week.gw_score_calculated
+        @prediction_tables = @game_week.predictions.where(gw_score_calulated: true).order("calculated_gw_score desc")
+      end
+    else
+      @prediction_tables = PredictionTable.order("current_score desc, total_gw_predicted asc")
+    end
+  end
+  
+  def results
+    @results = @league.gws_prediction_details
   end
   
   private

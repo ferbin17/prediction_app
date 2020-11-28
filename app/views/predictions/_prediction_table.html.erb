@@ -1,0 +1,28 @@
+<table>
+  <tr>
+    <th>Position</th>
+    <th>Name</th>
+    <th>Score</th>
+    <% if prediction_tables.first.try(:class) == PredictionTable %>
+      <th>No. of Gameweek predicted</th>
+      <th>No. of Gameweeks score calculated</th>
+    <% end %>
+  </tr>
+  <% if prediction_tables.present? %>
+    <% prediction_tables.each_with_index do |prediction_table, index| %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= prediction_table.user.username %></td>
+        <% if prediction_table.try(:class) == PredictionTable %>
+          <td><%= prediction_table.current_score.to_i %></td>
+          <td><%= prediction_table.total_gw_predicted %></td>
+          <td><%= prediction_table.total_gw_score_calculated %></td>
+        <% else %>
+          <td><%= prediction_table.calculated_gw_score.to_i %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  <% else %>
+    <tr><td colspan="5">No Predictions made</td></tr>
+  <% end %>
+</table>

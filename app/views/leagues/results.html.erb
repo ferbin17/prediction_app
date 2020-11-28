@@ -1,0 +1,10 @@
+<div id="results">
+  <%= render partial: "results", locals: {league: @league, game_week: @game_week, fixtures: @fixtures, prev_gw: @prev_gw, nxt_gw: @nxt_gw} %>
+</div>
+<script>
+  setInterval(function() {
+    if($('#refresh-results').length != 0){
+      $('#refresh-results')[0].click();
+    }
+  }, 1*60000);
+</script>

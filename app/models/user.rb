@@ -13,6 +13,12 @@ class User < ApplicationRecord
   before_save :hash_password, if: Proc.new{|user| user.dont_validate_password != false}
   scope :active, -> { where(is_active: true) }
   
+  def game_week_predictions(game_week_id)
+    game_week = GameWeek.find_by_id(game_week_id)
+    prediction = predictions.find_by(game_week_id: game_week.id) if game_week
+    prediction_scores = prediction.prediction_scores if prediction
+    prediction_scores||[]
+  end
   # Authentication method for user
   def authenticate
     user = User.active.where("username = binary(?)", self.username).first

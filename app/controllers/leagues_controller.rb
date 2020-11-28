@@ -1,0 +1,37 @@
+require 'net/http'
+class LeaguesController < ApplicationController
+  def results
+    @game_week = @league.current_game_week
+    @game_week = GameWeek.find_by_id(params[:id]) if params[:id].present?
+    if @game_week.present? && (@game_week.finished? || @game_week.is_current)
+      @prev_gw = @league.previous_gw(@game_week.id)
+      @nxt_gw = @league.next_gw(@game_week.id)
+      uri = URI("https://fantasy.premierleague.com/api/fixtures/?event=#{@game_week.slug}")
+      @fixtures = http_moved_handler(uri)
+      @fixtures = @game_week.fixtures.collect(&:to_response) unless @fixtures.present? 
+      if !request.xhr?
+        # Schedule job
+      end
+    else
+      redirect_to action: :results
+    end
+  end
+  
+  def fixtures
+    @game_week = @league.next_gw(@league.current_game_week.id) 
+    @game_week = GameWeek.find_by_id(params[:id]) if params[:id].present?
+    if @game_week.present? && !@game_week.finished && !@game_week.is_current
+      @prev_gw = @league.previous_gw(@game_week.id)
+      @nxt_gw = @league.next_gw(@game_week.id)
+      uri = URI("https://fantasy.premierleague.com/api/fixtures/?event=#{@game_week.slug}")
+      @fixtures = http_moved_handler(uri)
+      @fixtures = @game_week.fixtures.collect(&:to_response) unless @fixtures.present? 
+    else
+      redirect_to action: :fixtures
+    end
+  end
+  
+  def table
+    @league_tables = @league.league_tables.order("points desc, goals_d desc, goals_s desc")
+  end
+end

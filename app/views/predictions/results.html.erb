@@ -1,0 +1,21 @@
+<table>
+  <tr>
+    <th>Game Week</th>
+    <th>No. of Prediction</th>
+    <th>Topper</th>
+    <th></th>
+  </tr>
+  <% if @results.present? %>
+    <% @results.each do |game_week, prediction_details| %>
+      <tr>
+        <td><%= game_week.name %></td>
+        <td><%= @results[game_week][:count] %></td>
+        <td><%= "#{@results[game_week][:topper]}-#{@results[game_week][:top_score]}" %></td>
+        <td><%= link_to "Show GW Table", table_predictions_path(id: game_week.id), remote: true, class: "btn btn-primary" %>
+      </tr>
+    <% end %>
+    <div id="gw_table" class="modal" tabindex="-1" role="dialog"></div>
+  <% else %>
+    <tr><td colspan="4">No GameWeeks</td></tr>
+  <% end %>
+</table>

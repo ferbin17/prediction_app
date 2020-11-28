@@ -10,6 +10,7 @@ class CreateGameWeeks < ActiveRecord::Migration[6.0]
       t.boolean :is_next, default: false
       t.integer :league_id
       t.integer :slug
+      t.boolean :gw_score_calculated, default: false
       t.timestamps
     end
   end

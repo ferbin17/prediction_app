@@ -1,0 +1,41 @@
+<div class="row">
+  <div class="col-8">
+    <div class="row">
+      <div class="col-6">
+        Current Week<br><br>
+        <% if @current_gw_predicitons.present? %>
+          <%= render partial: "predictions/prediction_scores", locals: {game_week: @current_game_week, prediction_scores: @current_gw_predicitons, edit: nil} %>
+          <%= link_to "Change Predictions", edit_prediction_path(@current_gw_prediction.id), class: "btn btn-primary" if Time.at(@current_game_week.deadline_time_epoch) >= Time.now.localtime %>
+        <% else %>
+          <% @current_game_week.fixtures.each do |fixture| %>
+            <%= fixture.home_team.name %> vs <%= fixture.away_team.name %><br>
+          <% end %>
+          <% if Time.at(@current_game_week.deadline_time_epoch) > Time.now.localtime %>
+            <%= link_to "Make Predictions", new_prediction_path, class: "btn btn-primary" %>
+          <% else %>
+            Sorry, You haven't made prediction for this week. Deadline passed
+          <% end %>
+        <% end %>
+      </div>
+      <div class="col-6">
+        Last Week<br><br>
+        <% if @last_gw_predictions.present? %>
+        <%= render partial: "predictions/prediction_scores", locals: {game_week: @last_game_week, prediction_scores: @last_gw_predictions, edit: nil} %>
+          <%= link_to "Change Predictions", edit_prediction_path(@current_gw_prediction.id), class: "btn btn-primary" if Time.at(@last_game_week.deadline_time_epoch) >= Time.now.localtime %>
+        <% else %>
+          <% @last_game_week.fixtures.each do |fixture| %>
+            <%= fixture.home_team.name %> vs <%= fixture.away_team.name %><br>
+          <% end %>
+          <% if Time.at(@last_game_week.deadline_time_epoch) > Time.now.localtime %>
+            <%= link_to "Make Predictions", new_prediction_path, class: "btn btn-primary" %>
+          <% else %>
+            Sorry, You haven't made prediction for this week. Deadline passed
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="col-4">
+    <%= render partial: "prediction_table", locals: {prediction_tables: @prediction_tables} %>
+  </div>
+</div>

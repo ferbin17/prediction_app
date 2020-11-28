@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   before_action :current_user # Set current_user if user_id in session
   helper_method :current_user # Set current_user as helper method
   helper_method :reset_flash_message # Set reset_flash_message as helper method
+  helper_method :http_moved_handler
   
   private
   
@@ -30,6 +31,22 @@ class ApplicationController < ActionController::Base
       [:blue_notice, :lightgrey_notice, :success, :danger, :warning, :info,
         :light, :dark].each do |x|
         flash[x] = nil
+      end
+    end
+    
+    def http_moved_handler(uri)
+      begin
+        response = Net::HTTP.get_response(uri)
+        if response.code == "301"
+          response = Net::HTTP.get_response(URI.parse("https//" + url.host + response['location']))
+        end
+        if response.code == "200"
+          result = JSON.parse(response.body)
+        end
+        result
+      rescue Exception => e
+        log = Logger.new('log/http_logger.log')
+        log.info "HTTP request failed. Reason: #{e.message} at #{Time.now}"
       end
     end
 end

@@ -13,12 +13,27 @@ Rails.application.routes.draw do
   
   resources :predictions do
     collection do
+      get :table
+      get :post
+      get :results
     end
     
     member do
       get :edit_match
       patch :edit_match
       patch :update_match
+    end
+  end
+  
+  resources :leagues do
+    collection do
+      get :table
+      get :results
+      get :fixtures
+    end
+    
+    member do
+
     end
   end
   
