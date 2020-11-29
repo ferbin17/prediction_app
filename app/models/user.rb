@@ -11,7 +11,7 @@ class User < ApplicationRecord
   validates :username, uniqueness: { scope: :is_active,
       message: "can have only one active per time." }
   before_save :hash_password, if: Proc.new{|user| user.dont_validate_password != false}
-  after_create :create_confirmation_token
+  after_create :create_confirmation_token, if: Proc.new{|user| !user.is_admin}
   scope :active, -> { where(is_active: true) }
   
   def game_week_predictions(game_week_id)
