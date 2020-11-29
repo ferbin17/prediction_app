@@ -20,10 +20,5 @@ namespace :prediction_app do
       end
     end
     log.info "====== Completed daily_job_runner at #{Time.now.localtime} ======"
-    league = League.first
-    game_week = league.current_game_week
-    ChangeGameWeekWorker.perform_at(Time.now.localtime + 1.minutes, league.id)
-    MailGwPredictionWorker.perform_at(Time.now.localtime + 10.minutes, game_week.id)    
-    MatchFixtureUpdateSchedulerWorker.perform_at(Time.now.localtime + 30.minutes, game_week.id)
   end
 end
