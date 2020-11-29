@@ -1,5 +1,6 @@
 require 'net/http'
 class LeaguesController < ApplicationController
+  skip_before_action :login_required
   def results
     @game_week = @league.current_game_week
     @game_week = GameWeek.find_by_id(params[:id]) if params[:id].present?

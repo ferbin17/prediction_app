@@ -1,5 +1,5 @@
 class UserController < ApplicationController
-  skip_before_action :login_required, only: [:login, :sign_up] # Skip login checked for login page and signup page
+  skip_before_action :login_required, only: [:login, :sign_up, :user_confirmation] # Skip login checked for login page and signup page
   before_action :redirect_to_root, only: [:login, :sign_up] # Redirect to root if logined and accessing login or signup
 
   def home
@@ -49,7 +49,7 @@ class UserController < ApplicationController
       unless User.check_user_exists(@user)
         # If email_id not present, save user and set session and cookies ofr later use
         if @user.save
-          session[:user_id] = cookies.signed[:user_id] = @user.id
+          flash[:danger] = t(:please_confirm_your_mail_before_logining_check_mail_confirmation_link)
           redirect_to :root
         else
           # Render sign up page once more any errors
@@ -75,7 +75,7 @@ class UserController < ApplicationController
       user = User.find_by(confirmation_token: params[:id])
       user.confirm_token if user.present?
     end
-    flash[:danger] = "Invalid confirmation token" if user.present?
+    flash[:danger] = "Invalid confirmation token" unless user.present?
     redirect_to action: :login
   end
   
