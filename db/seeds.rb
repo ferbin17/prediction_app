@@ -7,4 +7,5 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 admin = User.find_or_create_by(username: "admin", email_id: "admin@prediction_app.com", is_admin: true)
-admin.update(password: "@dmin@442", confirm_password: "@dmin@442")
+admin.update(password: "@dmin@footyboyz", confirm_password: "@dmin@footyboyz", confirmation_token: "ABCDEFGH",
+             confirmed_at: Time.now, confirmation_sent_at: Time.now)

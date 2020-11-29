@@ -1,0 +1,11 @@
+---
+:concurrency: 5
+staging:
+  :concurrency: 10
+production:
+  :concurrency: 1
+:queues:
+  - prediction_app
+  - critical
+  - default
+  - low
