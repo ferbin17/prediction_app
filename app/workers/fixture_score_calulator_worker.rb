@@ -7,7 +7,7 @@ class FixtureScoreCalulatorWorker
     fixture = Fixture.find_by_id(fixture_id)
     if fixture.present?
       fixture.calculate_fixture_score
-      log.info "====== FixtureScoreCalulatorWorker Completed at #{Time.now.localtime} for Fixture(#{fixture.id}) #{fixture.name} ======"
+      log.info "====== FixtureScoreCalulatorWorker Completed at #{Time.now.localtime} for Fixture(#{fixture.id}) #{fixture.show_match} ======"
     else
       log.info "====== FixtureScoreCalulatorWorker Failed at #{Time.now.localtime} for Fixture(#{fixture_id}) - Not Found ======"
     end

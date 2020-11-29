@@ -44,7 +44,13 @@ class League < ApplicationRecord
         end
       end
     end
-    # Schedule active job after 5 minutes
+    log = Logger.new('log/daily_job_runner.log')
+    UpdateGwFixtureWorker.perform_at(Time.now.localtime + 5.minutes, self.id)
+    log.info "====== Scheduled UpdateGwFixtureWorker at #{Time.now.localtime} for League(#{self.id}) #{self.name} ======"
+  end
+  
+  def update_league_table
+    teams.each(&:update_league_table)
   end
   
   def calculate_gws_score

@@ -20,7 +20,7 @@ Rails.application.configure do
 
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
-  config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
+  config.public_file_server.enabled = true
 
   # Compress CSS using a preprocessor.
   # config.assets.css_compressor = :sass
@@ -109,4 +109,17 @@ Rails.application.configure do
   # config.active_record.database_selector = { delay: 2.seconds }
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
+  
+  Rails.application.routes.default_url_options[:host] = "predict.mfcreationz.xyz"
+  # SMTP settings for gmail
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address: Rails.application.credentials.aws[:email_configuratons][:address],
+    port: Rails.application.credentials.aws[:email_configuratons][:port],
+    domain: Rails.application.credentials.aws[:email_configuratons][:domain],
+    user_name: Rails.application.credentials.aws[:email_configuratons][:username],
+    password: Rails.application.credentials.aws[:email_configuratons][:password],
+    authentication: Rails.application.credentials.aws[:email_configuratons][:authentication],
+    enable_starttls_auto: Rails.application.credentials.aws[:email_configuratons][:enable_starttls_auto]
+  }
 end

@@ -9,6 +9,10 @@ Rails.application.routes.draw do
       post :sign_up
       get :logout
     end
+    
+    member do
+      get :user_confirmation
+    end
   end
   
   resources :predictions do
@@ -33,9 +37,11 @@ Rails.application.routes.draw do
     end
     
     member do
-
     end
   end
+  
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
   
   root to: "user#home"
 end

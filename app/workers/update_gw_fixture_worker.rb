@@ -12,8 +12,6 @@ class UpdateGwFixtureWorker
         league.update_gws_and_fixtures
       end
       log.info "====== UpdateGwFixtureWorker Completed at #{Time.now.localtime} for League(#{league.id}) #{league.name} ======"
-      ExportGwPredictionWorker.perform_at(Time.now.localtime + 10.minutes, league.id)
-      log.info "====== Scheduled ExportGwPredictionWorker at #{Time.now.localtime} for League(#{league.id}) #{league.name} ======"
     else
       log.info "====== UpdateGwFixtureWorker Failed at #{Time.now.localtime} for League(#{league_id}) - Not Found ======"
     end

@@ -11,6 +11,7 @@ class User < ApplicationRecord
   validates :username, uniqueness: { scope: :is_active,
       message: "can have only one active per time." }
   before_save :hash_password, if: Proc.new{|user| user.dont_validate_password != false}
+  after_create :create_confirmation_token
   scope :active, -> { where(is_active: true) }
   
   def game_week_predictions(game_week_id)
@@ -41,6 +42,13 @@ class User < ApplicationRecord
     false
   end
   
+  def confirm_token
+    if self.update(confirmed_at: Time.now, dont_validate_password: false)
+      @url = Rails.application.routes.url_helpers.url_for(controller: :user, action: :login)
+      UserMailer.with(user: self, url: @url).welcome_mail.deliver_now
+    end
+  end
+  
   private
   
     # Check if password and confirm_password matches
@@ -54,5 +62,16 @@ class User < ApplicationRecord
     def hash_password
       self.password_salt =  SecureRandom.base64(8) if self.password_salt == nil
       self.hashed_password = Digest::SHA1.hexdigest(self.password_salt + self.password)
+    end
+    
+    def create_confirmation_token
+      tmp_confirmation_token = SecureRandom.base64(32).gsub(/[\, =, \/, +]/, '')
+      while User.exists?(confirmation_token: tmp_confirmation_token)
+        tmp_confirmation_token = SecureRandom.base64(32).gsub(/[\, =, \/, +]/, '')
+      end
+      if self.update(confirmation_token: tmp_confirmation_token, dont_validate_password: false)
+        @url = Rails.application.routes.url_helpers.url_for(controller: :user, action: :user_confirmation, id: self.confirmation_token)
+        UserMailer.with(user: self, url: @url).confirmation_token_mail.deliver_now
+      end
     end
 end

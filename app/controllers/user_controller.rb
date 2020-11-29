@@ -17,13 +17,19 @@ class UserController < ApplicationController
       if @user.authenticate
         # If authenticated, session and cookies are set for later usage
         user = User.active.where("username = binary(?)", @user.username).first
-        user.update(sign_in_count: user.sign_in_count.to_i + 1, dont_validate_password: false)
-        session[:user_id] = cookies.signed[:user_id] = user.id
-        reset_flash_message
-        # Setting just_login params for inform login
-        session[:just_logined] = true
-        # Redirect back to last page if present else to root page
-        redirect_to (session[:back_path].present? ? session.delete(:back_path) : root_path)
+        if user.confirmed_at.present?
+          user.update(sign_in_count: user.sign_in_count.to_i + 1, dont_validate_password: false)
+          session[:user_id] = cookies.signed[:user_id] = user.id
+          reset_flash_message
+          # Setting just_login params for inform login
+          session[:just_logined] = true
+          # Redirect back to last page if present else to root page
+          redirect_to (session[:back_path].present? ? session.delete(:back_path) : root_path)
+        else
+          reset_flash_message
+          flash[:danger] = t(:please_confirm_your_mail_before_logining_check_mail_confirmation_link)
+          redirect_to action: :login
+        end
       else
         # Reset old flash message and add new one for wrong credentials and render login page once more
         reset_flash_message
@@ -61,6 +67,16 @@ class UserController < ApplicationController
     # Reset user session and cookies
     reset_session
     redirect_to :root
+  end
+  
+  def user_confirmation
+    reset_flash_message
+    if params[:id].present?
+      user = User.find_by(confirmation_token: params[:id])
+      user.confirm_token if user.present?
+    end
+    flash[:danger] = "Invalid confirmation token" if user.present?
+    redirect_to action: :login
   end
   
   private

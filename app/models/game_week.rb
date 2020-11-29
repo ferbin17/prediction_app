@@ -1,8 +1,12 @@
 require 'net/http'
+require 'csv'
 class GameWeek < ApplicationRecord
   belongs_to :league
   has_many :fixtures, dependent: :destroy
   has_many :predictions, dependent: :destroy
+  has_one_attached :prediction_attachment
+  has_one_attached :score_attachment
+  has_one_attached :total_score_attachment
   validates_presence_of :name, :deadline_time, :deadline_time_epoch, :slug
   validate :check_prediction_calculated, if: Proc.new{|game_week| game_week.gw_score_calculated_changed?}
   # validate :single_previous_current_next, if: Proc.new{|game_week| game_week.changed.include?("is_previous", "is_current", "is_next")}
@@ -46,9 +50,13 @@ class GameWeek < ApplicationRecord
     fixtures.order("kickoff_time_epoch desc").limit(1).try(:first)
   end
 
-  def fetch_fixtures
-    uri = URI("https://fantasy.premierleague.com/api/fixtures/?event=#{self.slug}")
-    result = http_moved_handler(uri)
+  def fetch_fixtures(fixture_responses = nil)
+    if fixture_responses.present?
+      result = fixture_responses
+    else
+      uri = URI("https://fantasy.premierleague.com/api/fixtures/?event=#{self.slug}")
+      result = http_moved_handler(uri)
+    end
     if result.present?
       result.each do |fixture_response|
         fixture = fixtures.find_or_create_by(slug: fixture_response["id"])
@@ -58,18 +66,113 @@ class GameWeek < ApplicationRecord
   end
   
   def export_prediction_csv
+    file_name = "prediction_league_#{self.league_id}_gw_#{self.id}.csv"
+    FileUtils.mkpath "#{Rails.root}/tmp/game_week_exports" unless File.exists? "#{Rails.root}/tmp/game_week_exports"
+    file_path = "#{Rails.root}/tmp/game_week_exports/#{file_name}"
+    headers = ["username", "game_week", "fixture", "scoreline", "winning_team"]
+    CSV.open(file_path, 'w', write_headers: true, headers: headers) do |writer|
+      predictions.each do |prediction|
+        prediction.prediction_scores.each do |prediction_score|
+          prediction_score_fixture = prediction_score.fixture
+          winning_team = prediction_score_fixture.winning_team_id == 0 ? "Draw" : Team.find_by_id(prediction_score_fixture.winning_team_id)
+          row = [prediction.user.username, prediction.game_week.name, prediction_score_fixture.show_match,
+                 prediction_score_fixture.scoreline, winning_team.show_name]
+          writer << row
+        end
+      end
+    end
+    file = File.open("#{file_path}")
+    if file
+      self.prediction_attachment.destroy if self.prediction_attachment.present?
+      if self.prediction_attachment.attach(io: File.open(file_path), 
+        filename: file_name)
+        begin
+          FileUtils.rm file.path
+        rescue
+        end
+      end
+    end
   end
   
   def send_prediction_csv
+    if self.prediction_attachment.present?
+      file = {name: prediction_attachment.filename.to_s, path: attachment_path("prediction_attachment")}
+      ["ferbin17@gmail.com"].each do |email_id|
+        CsvMailer.with(email_id: email_id, file: file,
+          game_week_name: name).send_prediction_attachment.deliver_now
+      end
+    end
   end
   
   def export_gw_scores
+    file_name = "score_league_#{self.league_id}_gw_#{self.id}.csv"
+    FileUtils.mkpath "#{Rails.root}/tmp/game_week_exports" unless File.exists? "#{Rails.root}/tmp/game_week_exports"
+    file_path = "#{Rails.root}/tmp/game_week_exports/#{file_name}"
+    headers = ["username", "game_week", "calculated_gw_score", "fixture", "scoreline", "winning_team", "calculated_score"]
+    CSV.open(file_path, 'w', write_headers: true, headers: headers) do |writer|
+      predictions.each do |prediction|
+        prediction.prediction_scores.each do |prediction_score|
+          prediction_score_fixture = prediction_score.fixture
+          winning_team = prediction_score_fixture.winning_team_id == 0 ? "Draw" : Team.find_by_id(prediction_score_fixture.winning_team_id)
+          row = [prediction.user.username, prediction.game_week.name, prediction.calculated_gw_score, 
+                 prediction_score_fixture.show_match, prediction_score_fixture.scoreline,
+                 winning_team.show_name, prediction_score_fixture.calculated_score]
+          writer << row
+        end
+      end
+    end
+    file = File.open("#{file_path}")
+    if file
+      self.score_attachment.destroy if self.score_attachment.present?
+      if self.score_attachment.attach(io: File.open(file_path), 
+        filename: file_name)
+        begin
+          FileUtils.rm file.path
+        rescue
+        end
+      end
+    end
   end
   
   def export_total_scores
+    file_name = "total_score_league_#{self.league_id}_gw_#{self.id}.csv"
+    FileUtils.mkpath "#{Rails.root}/tmp/game_week_exports" unless File.exists? "#{Rails.root}/tmp/game_week_exports"
+    file_path = "#{Rails.root}/tmp/game_week_exports/#{file_name}"
+    headers = ["username", "game_week", "current_score", "total_gw_predicted", "total_gw_score_calculated"]
+    CSV.open(file_path, 'w', write_headers: true, headers: headers) do |writer|
+      PredictionTable.all.each do |prediction_table|
+        row = [prediction_table.user.username, self.name, prediction_table.current_score,
+              prediction_table.total_gw_predicted, prediction_table.total_gw_score_calculated]
+        writer << row
+      end
+    end
+    file = File.open("#{file_path}")
+    if file
+      self.total_score_attachment.destroy if self.total_score_attachment.present?
+      if self.total_score_attachment.attach(io: File.open(file_path), 
+        filename: file_name)
+        begin
+          FileUtils.rm file.path
+        rescue
+
+        end
+      end
+    end
   end
   
   def send_scores_csv
+    if self.prediction_attachment.present?
+      files = [{name: score_attachment.filename.to_s, path: attachment_path("score_attachment")},
+              {name: total_score_attachment.filename.to_s, path: attachment_path("total_score_attachment")}]
+      ["ferbin17@gmail.com"].each do |email_id|
+        CsvMailer.with(email_id: email_id, files: files,
+          game_week_name: name).send_score_attachments.deliver_now
+      end
+    end
+  end
+  
+  def attachment_path(attachment)
+    ActiveStorage::Blob.service.path_for(self.send("#{attachment}").key)
   end
   
   private

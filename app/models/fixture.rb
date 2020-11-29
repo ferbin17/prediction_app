@@ -21,14 +21,12 @@ class Fixture < ApplicationRecord
   end
   
   def calculate_fixture_score
-    unless score_calulated
-      fixture_predicion_scores = prediction_scores
-      fixture_predicion_scores.each do |fixture_predicion_score|
-        score = 0
-        score += 1 if scoreline == fixture_predicion_score.scoreline
-        score += 1 if winning_team_id == fixture_predicion_score.winning_team_id
-        fixture_predicion_score.update(calculated_score: score, score_calulated: true)
-      end
+    fixture_predicion_scores = prediction_scores.where(score_calulated: false)
+    fixture_predicion_scores.each do |fixture_predicion_score|
+      score = 0
+      score += 1 if scoreline == fixture_predicion_score.scoreline
+      score += 1 if winning_team_id == fixture_predicion_score.winning_team_id
+      fixture_predicion_score.update(calculated_score: score, score_calulated: true)
     end
   end
   

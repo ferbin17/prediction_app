@@ -1,0 +1,1 @@
+42 18 * * MON ~/data/prediction_app/update_n_restart.sh >> ~/mf17/prediction_app/log/prediction_app_cron.log 2>&1

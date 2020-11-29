@@ -8,10 +8,10 @@ class LeaguesController < ApplicationController
       @nxt_gw = @league.next_gw(@game_week.id)
       uri = URI("https://fantasy.premierleague.com/api/fixtures/?event=#{@game_week.slug}")
       @fixtures = http_moved_handler(uri)
-      @fixtures = @game_week.fixtures.collect(&:to_response) unless @fixtures.present? 
-      if !request.xhr?
-        # Schedule job
+      if @fixtures.present? && !request.xhr?
+        GwFixtureUpdaterWorker.perform_async(@game_week.id, @fixtures)
       end
+      @fixtures = @game_week.fixtures.collect(&:to_response) unless @fixtures.present? 
     else
       redirect_to action: :results
     end
