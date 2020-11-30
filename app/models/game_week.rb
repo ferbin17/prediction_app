@@ -200,6 +200,7 @@ class GameWeek < ApplicationRecord
       params = params.merge({home_team_score: response["team_h_score"].to_i,
         away_team_score: response["team_a_score"].to_i, game_week_id: self.id,
           home_team_id: home_team.try(:id), away_team_id: away_team.try(:id)})
+      params[:finished] = response["finished_provisional"]
       params
     end
     

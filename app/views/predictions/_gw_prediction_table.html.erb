@@ -7,7 +7,7 @@
       </button>
     </div>
     <div class="modal-body">
-      <%= render partial: "prediction_table", locals: {prediction_tables: @prediction_tables} %>
+      <%= render partial: "prediction_table", locals: {prediction_tables: prediction_tables} %>
     </div>
     <div class="modal-footer">
       <button type="submit" class="btn btn-primary" onclick="$('#gw_table').hide();">Close</button>
