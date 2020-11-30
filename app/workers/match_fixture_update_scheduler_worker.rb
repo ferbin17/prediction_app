@@ -1,6 +1,6 @@
 class MatchFixtureUpdateSchedulerWorker
   include Sidekiq::Worker
-  sidekiq_options queue: :prediction_app, retry: false, backtrace: true
+  sidekiq_options queue: :prediction_app, retry: 0, backtrace: true
 
   def perform(game_week_id)
     log = Logger.new('log/daily_job_runner.log')
@@ -8,10 +8,10 @@ class MatchFixtureUpdateSchedulerWorker
     game_week = GameWeek.find_by_id(game_week_id)
     if game_week.present?
       game_week.fixtures.each do |fixture|
-        UpdateFixtureWorker.perform_at(Time.at(fixture.kickoff_time_epoch).localtime + 2.hours, game_week.id)
+        UpdateFixtureWorker.perform_at(Time.at(fixture.kickoff_time_epoch).localtime + 2.hours + 15.minutes, game_week.id)
         log.info "====== Scheduled UpdateFixtureWorker at #{Time.now.localtime} for Fixture(#{fixture.id}) #{fixture.show_match} ======"
         
-        FixtureScoreCalulatorWorker.perform_at(Time.at(fixture.kickoff_time_epoch).localtime + 2.hours + 10.minutes, fixture.id)
+        FixtureScoreCalulatorWorker.perform_at(Time.at(fixture.kickoff_time_epoch).localtime + 2.hours + 30.minutes, fixture.id)
         log.info "====== Scheduled FixtureScoreCalulatorWorker at #{Time.now.localtime} for Fixture(#{fixture.id}) #{fixture.show_match} ======"
         
         if game_week.last_match.id == fixture.id

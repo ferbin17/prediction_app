@@ -1,6 +1,6 @@
 class GwFixtureUpdaterWorker
   include Sidekiq::Worker
-  sidekiq_options queue: :prediction_app, retry: false, backtrace: true
+  sidekiq_options queue: :prediction_app, retry: 0, backtrace: true
 
   def perform(game_week_id, fixture_responses)
     game_week = GameWeek.find_by_id(game_week_id)
