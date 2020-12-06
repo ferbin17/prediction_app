@@ -13,7 +13,7 @@
   <% if fixtures.present? %>
     <% fixtures.each do |fixture| %>
       <tr>
-        <td><%= fixture["kickoff_time"].to_time.localtime.strftime("%d-%m-%y %H:%M") %></td>
+        <td><%= fixture["kickoff_time"].to_time.convert_to_user_timezone(session[:time_zone]).strftime("%d-%m-%y %H:%M") %></td>
         <% home_team = Team.find_by(slug: fixture["team_h"])
            home_team = home_team.present? ? home_team.show_name : "NIL"
            away_team = Team.find_by(slug: fixture["team_a"])

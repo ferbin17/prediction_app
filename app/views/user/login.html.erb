@@ -24,6 +24,7 @@
         </div>
       </div>
       <div class="field">
+        <%= f.hidden_field :time_zone, value: nil %>
       </div>
 
       <div class="field">
@@ -36,3 +37,8 @@
     <% end %>
   </div>
 </div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    document.getElementById('user_time_zone').value = jstz.determine().name();
+  })
+</script>

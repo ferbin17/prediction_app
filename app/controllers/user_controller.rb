@@ -18,7 +18,7 @@ class UserController < ApplicationController
         # If authenticated, session and cookies are set for later usage
         user = User.active.where("username = binary(?)", @user.username).first
         if user.confirmed_at.present?
-          user.update(sign_in_count: user.sign_in_count.to_i + 1, dont_validate_password: false)
+          set_time_zone_and_sign_in_count(user)
           session[:user_id] = cookies.signed[:user_id] = user.id
           reset_flash_message
           # Setting just_login params for inform login
@@ -88,7 +88,7 @@ class UserController < ApplicationController
     
     # Reset session and cookies
     def reset_session
-      session[:user_id] = cookies.signed[:user_id] = nil
+      session[:time_zone] = session[:user_id] = cookies.signed[:user_id] = nil
     end
     
     # Redirect to root if logined and accessing login or signup
@@ -96,5 +96,13 @@ class UserController < ApplicationController
       if session[:user_id].present?
         redirect_to :root
       end
+    end
+    
+    def set_time_zone_and_sign_in_count(user)
+      time_zone = params.dig(:user, :time_zone)
+      hash = {sign_in_count: user.sign_in_count.to_i + 1, dont_validate_password: false}
+      hash = hash.merge({time_zone: ActiveSupport::TimeZone::MAPPING.key(time_zone)}) if time_zone.present?
+      user.update(hash)
+      session[:time_zone] = user.time_zone
     end
 end
