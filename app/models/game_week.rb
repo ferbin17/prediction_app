@@ -63,6 +63,13 @@ class GameWeek < ApplicationRecord
         fixture.update(create_fixture_params("fixture", fixture_response))
       end
     end
+    update_game_week_finished unless self.finished
+  end
+  
+  def update_game_week_finished
+    if Time.now.localtime >= (Time.at(last_match.kickoff_time_epoch) + 2.hours)
+      self.update(finished: true)
+    end
   end
   
   def export_prediction_csv

@@ -1,6 +1,6 @@
 class GwScoreCalulatorWorker
   include Sidekiq::Worker
-  sidekiq_options queue: :prediction_app, retry: 0, backtrace: true
+  sidekiq_options queue: :prediction_app#, retry: 0, backtrace: true
 
   def perform(game_week_id)
     log = Logger.new('log/daily_job_runner.log')
