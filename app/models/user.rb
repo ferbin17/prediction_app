@@ -22,7 +22,7 @@ class User < ApplicationRecord
   end
   # Authentication method for user
   def authenticate
-    user = User.active.where("username = binary(?)", self.username).first
+    user = User.active.where("username = ?", self.username).first
     if user.present?
       return user.hashed_password == Digest::SHA1.hexdigest(user.password_salt.to_s + self.password)
     end
@@ -32,8 +32,8 @@ class User < ApplicationRecord
   # Check if user account exist or not
   def self.check_user_exists(user)
     found = false
-    found = true if User.active.where("username = binary(?)", user.username).present?
-    found = true if !found && User.active.where("email_id = binary(?)", user.email_id).present?
+    found = true if User.active.where("username = ?", user.username).present?
+    found = true if !found && User.active.where("email_id = ?", user.email_id).present?
     found
   end
   
