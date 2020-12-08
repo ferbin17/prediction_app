@@ -16,7 +16,7 @@ class UserController < ApplicationController
       @user = User.new(user_params)
       if @user.authenticate
         # If authenticated, session and cookies are set for later usage
-        user = User.active.where("username = binary(?)", @user.username).first
+        user = User.active.where("username = ?", @user.username).first
         if user.confirmed_at.present?
           set_time_zone_and_sign_in_count(user)
           session[:user_id] = cookies.signed[:user_id] = user.id
