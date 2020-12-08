@@ -12,7 +12,9 @@ class League < ApplicationRecord
   end
   
   def last_game_week
-    game_weeks.find_by(is_previous: true)
+    finished_current_gw = game_weeks.find_by(is_current: true, finished: true)
+    previous_game_week = game_weeks.find_by(is_previous: true)
+    return finished_current_gw ? finished_current_gw : previous_game_week
   end
   
   def previous_gw(gw_id)
