@@ -10,8 +10,8 @@ class PredictionsController < ApplicationController
     @current_gw_predicitons = @current_user.game_week_predictions(@current_game_week.id) if @current_gw_prediction
     
     @last_game_week = @league.last_game_week
-    @current_gw_prediction = @current_user.predictions.find_by(game_week_id: @last_game_week.id)
-    @last_gw_predictions = @current_user.game_week_predictions(@last_game_week.id) if @current_gw_prediction
+    @last_gw_prediction = @current_user.predictions.find_by(game_week_id: @last_game_week.id)
+    @last_gw_predictions = @current_user.game_week_predictions(@last_game_week.id) if @last_gw_prediction
   end
   
   def new
