@@ -61,6 +61,7 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "prediction_app_production"
 
   config.action_mailer.perform_caching = false
+  
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
@@ -112,6 +113,8 @@ Rails.application.configure do
   
   Rails.application.routes.default_url_options[:host] = "predict.mfcreationz.xyz"
   # SMTP settings for gmail
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: Rails.application.credentials.aws[:email_configuratons][:address],

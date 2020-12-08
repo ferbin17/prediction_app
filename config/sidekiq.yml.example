@@ -6,6 +6,7 @@ production:
   :concurrency: 1
 :queues:
   - prediction_app
+  - mailers
   - critical
   - default
   - low

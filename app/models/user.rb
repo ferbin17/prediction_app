@@ -49,6 +49,14 @@ class User < ApplicationRecord
     end
   end
   
+  def resend_confirmation_mail
+    if self.confirmation_token
+      @url = Rails.application.routes.url_helpers.url_for(controller: :user, action: :user_confirmation, id: self.confirmation_token)
+      UserMailer.with(user: self, url: @url).confirmation_token_mail.deliver_now
+    end
+  end
+
+  
   private
   
     # Check if password and confirm_password matches
