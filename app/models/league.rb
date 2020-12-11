@@ -30,21 +30,27 @@ class League < ApplicationRecord
   end
   
   def change_game_week
+    game_week_changed = false
     current_gw = game_weeks.find_by(is_current: true)
     if current_gw && Time.now.localtime > (Time.at(current_gw.last_match.kickoff_time_epoch) + 2.hours)
       current_gw.update(finished: true)
     end
-    finished_current_gw = game_weeks.find_by(is_current: false, finished: true)
+    finished_current_gw = game_weeks.find_by(is_current: true, finished: true)
     if finished_current_gw
       next_game_week = game_weeks.find_by(is_next: true)
       if next_game_week
         if next_game_week.update(is_next: false, is_current: true)
-          game_weeks.update(is_previous: false)
+          game_weeks.update_all(is_previous: false)
           finished_current_gw.update(is_previous: true)
           new_next_game_week = game_weeks.where("deadline_time_epoch > #{next_game_week.deadline_time_epoch}").limit(1).try(:first)
           new_next_game_week.update(is_next: true) if new_next_game_week.present?
+          game_week_changed = true
         end
       end
+    end
+    unless game_week_changed
+      ChangeGameWeekWorker.perform_at(Time.now.localtime + 5.minutes, self.id)
+      log.info "====== Scheduled ChangeGameWeekWorker at #{Time.now.localtime} for League(#{self.id}) #{self.name} ======"
     end
   end
   
