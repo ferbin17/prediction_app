@@ -49,6 +49,7 @@ class League < ApplicationRecord
       end
     end
     unless game_week_changed
+      log = Logger.new('log/daily_job_runner.log')
       ChangeGameWeekWorker.perform_at(Time.now.localtime + 5.minutes, self.id)
       log.info "====== Scheduled ChangeGameWeekWorker at #{Time.now.localtime} for League(#{self.id}) #{self.name} ======"
     end
