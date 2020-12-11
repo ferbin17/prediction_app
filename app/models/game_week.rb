@@ -81,7 +81,7 @@ class GameWeek < ApplicationRecord
       predictions.each do |prediction|
         prediction.prediction_scores.each do |prediction_score|
           prediction_score_fixture = prediction_score.fixture
-          winning_team = prediction_score_fixture.winning_team_id == 0 ? "Draw" : Team.find_by_id(prediction_score_fixture.winning_team_id)
+          winning_team = (prediction_score_fixture.winning_team_id == 0 ? "Draw" : Team.find_by_id(prediction_score_fixture.winning_team_id))
           row = [prediction.user.username, prediction.game_week.name, prediction_score_fixture.show_match,
                  prediction_score_fixture.scoreline, (winning_team.class == Team ? winning_team.show_name : winning_team)]
           writer << row
@@ -120,7 +120,7 @@ class GameWeek < ApplicationRecord
       predictions.each do |prediction|
         prediction.prediction_scores.each do |prediction_score|
           prediction_score_fixture = prediction_score.fixture
-          winning_team = prediction_score_fixture.winning_team_id == 0 ? "Draw" : Team.find_by_id(prediction_score_fixture.winning_team_id)
+          winning_team = (prediction_score_fixture.winning_team_id == 0 ? "Draw" : Team.find_by_id(prediction_score_fixture.winning_team_id))
           row = [prediction.user.username, prediction.game_week.name, prediction.calculated_gw_score, 
                  prediction_score_fixture.show_match, prediction_score_fixture.scoreline,
                  (winning_team.class == Team ? winning_team.show_name : winning_team),
