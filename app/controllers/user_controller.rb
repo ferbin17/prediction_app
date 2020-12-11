@@ -3,7 +3,7 @@ class UserController < ApplicationController
   before_action :redirect_to_root, only: [:login, :sign_up] # Redirect to root if logined and accessing login or signup
 
   def home
-    @current_game_week = @league.current_game_week
+    p @current_game_week = @league.current_game_week
     @prediction = @current_user.predictions.find_by(game_week_id: @current_game_week.id)
     @prediction_scores = @prediction.prediction_scores if @prediction
   end
