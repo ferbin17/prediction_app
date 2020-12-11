@@ -34,7 +34,7 @@ class League < ApplicationRecord
     if current_gw && Time.now.localtime > (Time.at(current_gw.last_match.kickoff_time_epoch) + 2.hours)
       current_gw.update(finished: true)
     end
-    finished_current_gw = game_weeks.find_by(is_current: true, finished: true)
+    finished_current_gw = game_weeks.find_by(is_current: false, finished: true)
     if finished_current_gw
       next_game_week = game_weeks.find_by(is_next: true)
       if next_game_week
@@ -46,9 +46,6 @@ class League < ApplicationRecord
         end
       end
     end
-    log = Logger.new('log/daily_job_runner.log')
-    UpdateGwFixtureWorker.perform_at(Time.now.localtime + 5.minutes, self.id)
-    log.info "====== Scheduled UpdateGwFixtureWorker at #{Time.now.localtime} for League(#{self.id}) #{self.name} ======"
   end
   
   def update_league_table
