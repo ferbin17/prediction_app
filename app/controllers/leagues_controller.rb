@@ -12,7 +12,9 @@ class LeaguesController < ApplicationController
       if @fixtures.present? && !request.xhr?
         GwFixtureUpdaterWorker.perform_async(@game_week.id, @fixtures)
       end
-      @fixtures = @game_week.fixtures.collect(&:to_response) unless @fixtures.present? 
+      @fixtures = @game_week.fixtures.collect(&:to_response) unless @fixtures.present?
+    elsif @game_week.present? && @game_week.is_next?
+      @game_week = @league.game_weeks.find_by_finished_and_is_current(true, true)
     else
       redirect_to action: :results
     end
