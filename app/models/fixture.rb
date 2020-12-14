@@ -21,7 +21,8 @@ class Fixture < ApplicationRecord
   end
   
   def calculate_fixture_score
-    fixture_predicion_scores = prediction_scores.where(score_calulated: false)
+    # change to only false later
+    fixture_predicion_scores = prediction_scores.where("score_calulated = false OR score_calulated is NULL")
     fixture_predicion_scores.each do |fixture_predicion_score|
       score = 0
       score += 1 if scoreline == fixture_predicion_score.scoreline
