@@ -29,7 +29,8 @@ class PredictionScore < ApplicationRecord
     end
     
     def deadline_time
-      if Time.at(self.prediction.game_week.deadline_time_epoch) < Time.now.localtime && self.changed.include?("scoreline", "winning_team_id")
+      if Time.at(self.prediction.game_week.deadline_time_epoch) < Time.now.localtime && self.changed.include?("scoreline") &&
+        self.changed.include?("winning_team_id")
         self.errors.add(:base, :deadline_time_passes)
       end
     end
