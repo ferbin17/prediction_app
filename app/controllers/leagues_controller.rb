@@ -29,7 +29,7 @@ class LeaguesController < ApplicationController
   end
   
   def table
-    @league_tables = @league.league_tables.order("points desc, goals_d desc, goals_s desc")
+    @league_tables = @league.league_tables.order("points desc, goals_d desc, goals_s desc").page(params[:page]).per(5)
   end
   
   private

@@ -1,42 +1,21 @@
-<div class="row">
-  <div class="col-7">
-  <h2>LOGIN</h2>
-    <%= form_for(@user, url: login_user_index_path) do |f| %>
-      <%= render partial: "layouts/error_messages", locals:{object: @user} %>
-      <div class="field">
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text left-input-group-text">Username :</span>
-          </div>
-          <%= f.text_field :username, autofocus: true, autocomplete: "off", placeholder: "Username", required: true, class: "form-control" %>
-          <div class="input-group-append"> </div>
-        </div>
-      </div>
-
-      <div class="field">
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text left-input-group-text">Confirm Password :</span>
-          </div>
-          <%= f.password_field :password, autocomplete: "current-password", placeholder: "Enter Password", required: true, class: "form-control" %>
-          <div class="input-group-append">
-          </div>
-        </div>
-      </div>
-      <div class="field">
-        <%= f.hidden_field :time_zone, value: nil %>
-      </div>
-
-      <div class="field">
-        <%= f.submit "LOGIN" %>
-      </div>
-      
-      <div class="field">
-        <%= link_to "New to 442 Prediction App? Create an Account", sign_up_user_index_path, class: "" %>
-      </div> 
-    <% end %>
-  </div>
+<div class="login-container">
+  <%= form_for(@user, url: login_user_index_path) do |f| %>
+    <%= render partial: "layouts/error_messages", locals:{object: @user} %>
+    <h1>LOGIN</h1>
+    <div>
+      <label>Username</label>
+      <%= f.text_field :username, autofocus: true, autocomplete: "off", placeholder: "Username", required: true, class: "form-control" %>
+    </div>
+    <div>
+      <label>Password</label>
+      <%= f.password_field :password, autocomplete: "off", placeholder: "Password", required: true, class: "form-control" %>
+    </div>
+    <%= f.hidden_field :time_zone, value: nil %>
+    <%= f.submit "Login", class: "login-button" %>
+    <%= link_to "New to Prediction App? Create an Account", sign_up_user_index_path, class: "sign-up" %>
+  <% end %>
 </div>
+
 <script type="text/javascript">
   $(document).ready(function(){
     document.getElementById('user_time_zone').value = jstz.determine().name();

@@ -1,18 +1,22 @@
-<table>
+<table class="table table-striped table-dark results-fixture">
+  <tr><th colspan="10"><%= league.name %></th></tr>
   <tr>
     <th><%= link_to "<", results_leagues_path(id: prev_gw.id), remote: true if prev_gw.present? %></th>
-    <th colspan="2"><%= game_week.name %></th>
+    <th colspan="4"><%= game_week.name %></th>
     <th><%= link_to ">", results_leagues_path(id: nxt_gw.id), remote: true if nxt_gw.present? && (nxt_gw.finished? || nxt_gw.is_current) %></th>
   </tr>
   <tr>
+    <th></th>
     <th>Time</th>
     <th>Home Team</th>
     <th>Score</th>
     <th>Away Team</th>
+    <th></th>
   </tr>
   <% if fixtures.present? %>
     <% fixtures.each do |fixture| %>
       <tr>
+        <td></td>
         <% time = fixture["started"] ? (fixture["finished_provisional"] ? "FT" : "In Progess" ) : fixture["kickoff_time"].to_time.convert_to_user_timezone(session[:time_zone]).strftime("%d-%m-%y %H:%M") %>
         <td><%= time %></td>
         <% home_team = Team.find_by(slug: fixture["team_h"])
@@ -23,6 +27,7 @@
         <td><%= home_team %></td>
         <td><%= "#{fixture['team_h_score']} - #{fixture['team_a_score']}" %></td>
         <td><%= away_team %></td>
+        <td></td>
       </tr>
     <% end %>
   <% else %>

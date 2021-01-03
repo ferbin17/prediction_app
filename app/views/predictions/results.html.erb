@@ -1,9 +1,9 @@
-<table>
+<table class="table table-striped table-dark">
   <tr>
-    <th>Game Week</th>
-    <th>No. of Prediction</th>
-    <th>Topper</th>
-    <th></th>
+    <th scope="col">Game Week</th>
+    <th scope="col">No. of Prediction</th>
+    <th scope="col">Topper</th>
+    <th scope="col"></th>
   </tr>
   <% if @results.present? %>
     <% @results.each do |game_week, prediction_details| %>
@@ -12,6 +12,37 @@
         <td><%= @results[game_week][:count] %></td>
         <td><%= "#{@results[game_week][:topper]}-#{@results[game_week][:top_score]}" %></td>
         <td><%= link_to "Show GW Table", table_predictions_path(id: game_week.id), remote: true, class: "btn btn-primary" %>
+      </tr>
+    <% end %>
+    <% if @total_page %>
+      <tr>
+        <td colspan="4">
+          <nav>
+            <ul class="pagination">
+            <% if (params[:page] && params[:page].to_i != 1) %>
+              <li class="page-item">
+                <a class="page-link" href="/predictions/results">« First</a>
+              </li>
+            <% end %>
+            <% (1..@total_page).each do |page| %>
+              <% if (params[:page] && params[:page].to_i == page) || (params[:page].nil? && page == 1) %>
+                <li class="page-item active">
+                  <a data-remote="false" class="page-link"><%= page %></a>
+                </li>
+              <% else %>
+                <li class="page-item">
+                  <a rel="next" class="page-link" href="/predictions/results?page=<%= page %>"><%= page %></a>
+                </li>
+              <% end %>
+            <% end %>
+            <% unless params[:page].to_i == @total_page %>
+              <li class="page-item">
+                <a class="page-link" href="/predictions/results?page=<%= @total_page %>">Last »</a>
+              </li>
+            <% end %>
+            </ul>
+          </nav>
+        </td>
       </tr>
     <% end %>
     <div id="gw_table" class="modal" tabindex="-1" role="dialog"></div>

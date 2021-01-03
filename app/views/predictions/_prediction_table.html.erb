@@ -1,17 +1,19 @@
-<table>
+<% modal_class = (is_modal.present? ? "modal-table" : "") %>
+<% colspan = (prediction_tables && prediction_tables.first.try(:class) == PredictionTable ? 5 : 3) %>
+<table class="table table-striped table-dark <%= modal_class %>">
   <tr>
-    <th>Position</th>
-    <th>Name</th>
-    <th>Score</th>
-    <% if prediction_tables.first.try(:class) == PredictionTable %>
-      <th>No. of Gameweek predicted</th>
-      <th>No. of Gameweeks score calculated</th>
+    <th scope="col">Position</th>
+    <th scope="col">Name</th>
+    <th scope="col">Score</th>
+    <% if prediction_tables && prediction_tables.first.try(:class) == PredictionTable %>
+      <th scope="col">No. of Gameweek predicted</th>
+      <th scope="col">No. of Gameweeks score calculated</th>
     <% end %>
   </tr>
   <% if prediction_tables.present? %>
     <% prediction_tables.each_with_index do |prediction_table, index| %>
       <tr>
-        <td><%= index + 1 %></td>
+        <td scope="row"><%= index + 1 %></td>
         <td><%= prediction_table.user.username %></td>
         <% if prediction_table.try(:class) == PredictionTable %>
           <td><%= prediction_table.current_score.to_i %></td>
@@ -22,7 +24,12 @@
         <% end %>
       </tr>
     <% end %>
+    <% if PredictionTable.count > 10 %>
+      <tr>
+        <td colspan="<%= colspan %>"><%= paginate prediction_tables %></td>
+      </tr>
+    <% end %>
   <% else %>
-    <tr><td colspan="5">No Predictions made</td></tr>
+    <tr><td colspan="<%= colspan %>">No Predictions made</td></tr>
   <% end %>
 </table>

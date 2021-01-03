@@ -1,5 +1,5 @@
-<%= league.name %>
-<table>
+<table class="table table-striped table-dark">
+  <tr><th colspan="10"><%= league.name %></th></tr>
   <tr>
     <th>Position</th>
     <th>Team</th>
@@ -15,7 +15,7 @@
   <% if league_tables.present? %>
     <% league_tables.each_with_index do |league_table, index| %>
       <tr>
-        <td><%= index + 1 %></td>
+        <td><%= index + 1 + (league_tables.limit_value * ((params[:page]||1).to_i - 1)) %></td>
         <td><%= league_table.team.show_name %></td>
         <td><%= league_table.matches %></td>
         <td><%= league_table.wins %></td>
@@ -27,9 +27,14 @@
         <td><%= league_table.points %></td>
       </tr>
     <% end %>
+    <% if league_tables.total_pages > 1 %>
+      <tr>
+        <td class="pagination-td" colspan="10"><%= paginate league_tables %></td>
+      </tr>
+    <% end %>
   <% else %>
     <tr>
-      <td colspan="4">Sorry Somthing went wrong</td>
+      <td colspan="10">Sorry Somthing went wrong</td>
     </tr>
   <% end %>
 </table>

@@ -63,15 +63,17 @@ class PredictionsController < ApplicationController
     if params[:id].present?
       @game_week = GameWeek.find_by_id(params[:id])
       if @game_week && @game_week.finished && @game_week.gw_score_calculated
-        @prediction_tables = @game_week.predictions.where(gw_score_calulated: true).order("calculated_gw_score desc")
+        @prediction_tables = @game_week.predictions.where(gw_score_calulated: true).order("calculated_gw_score desc").page(params[:page]).per(10)
       end
     else
-      @prediction_tables = PredictionTable.order("current_score desc, total_gw_predicted asc")
+      @prediction_tables = PredictionTable.order("current_score desc, total_gw_predicted asc").page(params[:page]).per(10)
     end
   end
   
   def results
-    @results = @league.gws_prediction_details
+    @results = @league.gws_prediction_details(params[:page])
+    @total_page = (@league.game_weeks.where(finished: true).count / 5)
+    @total_page += 1 unless (@league.game_weeks.where(finished: true).count % 5) == 0
   end
   
   private

@@ -31,3 +31,5 @@
 
 en:
   hello: "Hello world"
+  wrong_credentials: "Wrong credentials, try again !"
+  please_confirm_your_mail_before_logining_check_mail_confirmation_link: "Please confirm your mail before logining in. Check your mail for confirmation link."

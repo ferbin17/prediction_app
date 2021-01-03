@@ -45,3 +45,38 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+table{
+  position: absolute;
+  width: 70% !important;
+  top: 50%;
+  left: 50%;
+  margin: 0 auto;
+  transform: translate(-50%, -50%);
+  opacity: 0.85;
+  border-radius: 15px;
+}
+
+table tr:first-child th{
+  border-top: none;
+}
+
+table tr th, table tr td{
+  text-align: center;
+}
+
+table tr td.pagination-td, table td ul.pagination{
+  margin-bottom: 0 !important;
+}
+
+table td ul.pagination{
+ float: right;
+}
+
+table.modal-table{
+  width: 100% !important;
+  position: inherit;
+  transform: none;
+  top: inherit;
+  left: inherit;
+}

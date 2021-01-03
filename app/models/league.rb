@@ -63,9 +63,9 @@ class League < ApplicationRecord
     game_weeks.where(finished: true).each(&:calculate_gw_scores)
   end
   
-  def gws_prediction_details
+  def gws_prediction_details(page = nil)
     results = {}
-    game_weeks.where(finished: true).order("deadline_time_epoch asc").each do |game_week|
+    game_weeks.where(finished: true).order("deadline_time_epoch desc").page(page).per(5).each do |game_week|
       results[game_week] = game_week.prediction_details
     end
     results
