@@ -55,3 +55,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'sidekiq'
 gem 'kaminari'
 gem 'hirb'
+
+# SSO
+gem 'ruby-saml', '~> 1.11.0'

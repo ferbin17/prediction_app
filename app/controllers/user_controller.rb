@@ -7,7 +7,7 @@ class UserController < ApplicationController
     @prediction = @current_user.predictions.find_by(game_week_id: @current_game_week.id)
     @prediction_scores = @prediction.prediction_scores if @prediction
   end
-  
+
   # User login
   def login
     @user = User.new
@@ -38,14 +38,14 @@ class UserController < ApplicationController
       end
     end
   end
-  
+
   def sign_up
     # Reset old flash message
     reset_flash_message
     @user = User.new
     if request.post?
       # Build (not save) new user and check if email_id also present
-      @user = User.new(user_params) 
+      @user = User.new(user_params)
       unless User.check_user_exists(@user)
         # If email_id not present, save user and set session and cookies ofr later use
         if @user.save
@@ -68,7 +68,7 @@ class UserController < ApplicationController
     reset_session
     redirect_to :root
   end
-  
+
   def user_confirmation
     reset_flash_message
     if params[:id].present?
@@ -78,26 +78,26 @@ class UserController < ApplicationController
     flash[:danger] = "Invalid confirmation token" unless user.present?
     redirect_to action: :login
   end
-  
+
   private
 
     # Fetches user params
     def user_params
       params.require(:user).permit(:password, :confirm_password, :email_id, :username)
     end
-    
+
     # Reset session and cookies
     def reset_session
-      session[:time_zone] = session[:user_id] = cookies.signed[:user_id] = nil
+      session[:time_zone] = session[:user_id] = cookies.signed[:user_id] = session[:saml_email] = nil
     end
-    
+
     # Redirect to root if logined and accessing login or signup
     def redirect_to_root
       if session[:user_id].present?
         redirect_to :root
       end
     end
-    
+
     def set_time_zone_and_sign_in_count(user)
       time_zone = params.dig(:user, :time_zone)
       hash = {sign_in_count: user.sign_in_count.to_i + 1, dont_validate_password: false}

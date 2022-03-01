@@ -14,6 +14,7 @@
     <%= f.submit "Login", class: "login-button" %>
     <%= link_to "New to Prediction App? Create an Account", sign_up_user_index_path, class: "sign-up" %>
   <% end %>
+  <%= button_to 'Login with Okta', init_saml_path, method: :get, class: 'login-button' %>
 </div>
 
 <script type="text/javascript">
