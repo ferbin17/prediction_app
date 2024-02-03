@@ -1,0 +1,26 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: root
+  password:
+
+development:
+  <<: *default
+  database: prediction_app
+
+test:
+  <<: *default
+  database: prediction_app
+
+heroku:
+  <<: *default
+
+staging:
+  <<: *default
+
+production:
+  <<: *default
+  database: prediction_app
+  username: prediction_app
+  password: <%= ENV['PREDICTION_APP_DATABASE_PASSWORD'] %>
